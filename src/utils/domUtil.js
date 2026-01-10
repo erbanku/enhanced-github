@@ -4,6 +4,7 @@ const apiUtil = require('./apiUtil');
 const commonUtil = require('./commonUtil');
 const handlersUtil = require('./handlersUtil');
 const storageUtil = require('./storageUtil');
+const CommonEnum = require('../enums/CommonEnum');
 
 function fetchDataAndCreateDOMElements() {
   domUtil.addCopyAndDownloadButton();
@@ -29,6 +30,11 @@ const domUtil = {
     return elemClass.split(' ').indexOf(className) > -1;
   },
   appendRepoSizeElement: function() {
+    // Check if repo size should be shown
+    if (storageUtil.get(CommonEnum.SHOW_REPO_SIZE) === false) {
+      return;
+    }
+
     commonUtil.removePrevInstancesOf('.eg-repo-size');
 
     const formattedFileSize = commonUtil.convertSizeToHumanReadableFormat(storageUtil.get('repoSize') * 1024); // GitHub API return size in KB for repo
@@ -119,6 +125,11 @@ const domUtil = {
     }, 0);
   },
   addCopyAndDownloadButton: function() {
+    // Check if copy button should be shown
+    if (storageUtil.get(CommonEnum.SHOW_COPY_FILE_BUTTON) === false) {
+      return;
+    }
+
     const btnGroup = document.querySelectorAll('.BtnGroup:not(.d-md-none)')[1];
 
     if (btnGroup && window.location.href && window.location.href.indexOf('blob/' + commonUtil.getBranch()) > -1) {
@@ -131,6 +142,12 @@ const domUtil = {
     }
   },
   addFileSizeAndDownloadLink: function() {
+    // Check if file size and download link should be shown
+    if (storageUtil.get(CommonEnum.SHOW_FILE_SIZE) === false && 
+        storageUtil.get(CommonEnum.SHOW_DOWNLOAD_LINK) === false) {
+      return;
+    }
+
     apiUtil.getRepoContent(function(data) {
       handlersUtil.onPathContentFetched(data);
     });
