@@ -28,6 +28,7 @@ function saveOptions() {
   var showFileSize = document.getElementById('show-file-size').checked;
   var showDownloadLink = document.getElementById('show-download-link').checked;
   var showCopyFileButton = document.getElementById('show-copy-file-button').checked;
+  var wrapCodeLines = document.getElementById('wrap-code-lines').checked;
   
   chrome.storage.sync.set(
     {
@@ -35,7 +36,8 @@ function saveOptions() {
       'show-repo-size': showRepoSize,
       'show-file-size': showFileSize,
       'show-download-link': showDownloadLink,
-      'show-copy-file-button': showCopyFileButton
+      'show-copy-file-button': showCopyFileButton,
+      'wrap-code-lines': wrapCodeLines
     },
     function() {
       // Update statusText to let user know options were saved.
@@ -71,7 +73,8 @@ function restoreOptions() {
       'show-repo-size': true,
       'show-file-size': true,
       'show-download-link': true,
-      'show-copy-file-button': true
+      'show-copy-file-button': true,
+      'wrap-code-lines': false
     },
     function(storedData) {
       token = storedData['x-github-token'];
@@ -80,6 +83,7 @@ function restoreOptions() {
       document.getElementById('show-file-size').checked = storedData['show-file-size'];
       document.getElementById('show-download-link').checked = storedData['show-download-link'];
       document.getElementById('show-copy-file-button').checked = storedData['show-copy-file-button'];
+      document.getElementById('wrap-code-lines').checked = storedData['wrap-code-lines'];
       
       var validationWarning = document.getElementById('validation-warning');
       validationWarning.textContent = validateUserToken(token);

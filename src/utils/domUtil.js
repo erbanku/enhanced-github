@@ -151,6 +151,35 @@ const domUtil = {
     apiUtil.getRepoContent(function(data) {
       handlersUtil.onPathContentFetched(data);
     });
+  },
+  applyCodeWrapping: function() {
+    // Check if code wrapping should be applied
+    if (storageUtil.get(CommonEnum.WRAP_CODE_LINES) === false) {
+      return;
+    }
+
+    // Add or update the style element for code wrapping
+    let styleId = 'enhanced-github-code-wrap-style';
+    let styleElement = document.getElementById(styleId);
+    
+    if (!styleElement) {
+      styleElement = document.createElement('style');
+      styleElement.id = styleId;
+      document.head.appendChild(styleElement);
+    }
+
+    // Apply styles to wrap code in markdown code blocks
+    styleElement.textContent = `
+      /* Enhanced GitHub - Wrap long lines in code blocks */
+      .markdown-body pre code,
+      .markdown-body pre,
+      .blob-code-inner,
+      .highlight pre {
+        white-space: pre-wrap !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+      }
+    `;
   }
 };
 
