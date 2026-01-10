@@ -116,6 +116,26 @@
       input[type="text"]:focus {
         border-bottom: 2px solid #5264AE;
       }
+
+      .checkbox-container {
+        margin: 15px 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .checkbox-container input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+
+      .checkbox-container label {
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+        user-select: none;
+      }
     </style>
   </head>
   <body>
@@ -152,7 +172,7 @@
           <span id="status--text" class="success-msg  vertical-center"></span>
         </div>
 
-        <div class="push--top  inline-block  hidden" id="validation-block">
+        <div class="inline-block  hidden" id="validation-block">
           <svg
             fill="#de973e"
             height="24"
@@ -165,6 +185,28 @@
             <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
           </svg>
           <span id="validation-warning" class="warning-msg  vertical-center  push--top"></span>
+        </div>
+
+        <h3 style="padding-top: 20px; padding-bottom: 10px; color: grey;">Display Settings</h3>
+        
+        <div class="checkbox-container">
+          <input type="checkbox" id="show-repo-size" checked>
+          <label for="show-repo-size">Show repository size</label>
+        </div>
+
+        <div class="checkbox-container">
+          <input type="checkbox" id="show-file-size" checked>
+          <label for="show-file-size">Show file size in file browser</label>
+        </div>
+
+        <div class="checkbox-container">
+          <input type="checkbox" id="show-download-link" checked>
+          <label for="show-download-link">Show download links in file browser</label>
+        </div>
+
+        <div class="checkbox-container">
+          <input type="checkbox" id="show-copy-file-button" checked>
+          <label for="show-copy-file-button">Show copy file contents button</label>
         </div>
 
         <button class="btn" id="save-btn" style="margin-top: 20px;">Save</button>

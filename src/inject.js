@@ -34,11 +34,19 @@ const CommonEnum = require('./enums/CommonEnum');
 
       chrome.storage.sync.get(
         {
-          'x-github-token': ''
+          'x-github-token': '',
+          'show-repo-size': true,
+          'show-file-size': true,
+          'show-download-link': true,
+          'show-copy-file-button': true
         },
         function(storedData) {
           if (storedData) {
             storageUtil.set(CommonEnum.TOKEN, storedData['x-github-token']);
+            storageUtil.set(CommonEnum.SHOW_REPO_SIZE, storedData['show-repo-size']);
+            storageUtil.set(CommonEnum.SHOW_FILE_SIZE, storedData['show-file-size']);
+            storageUtil.set(CommonEnum.SHOW_DOWNLOAD_LINK, storedData['show-download-link']);
+            storageUtil.set(CommonEnum.SHOW_COPY_FILE_BUTTON, storedData['show-copy-file-button']);
           }
           domUtil.addRepoData();
         }

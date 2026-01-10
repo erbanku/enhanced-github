@@ -24,9 +24,18 @@ function saveOptions() {
   document.getElementById('save-btn').setAttribute('disabled', 'disabled');
   document.getElementById('save-btn').style.background = '#DEDEDE';
   var token = document.getElementById('x-github-token').value;
+  var showRepoSize = document.getElementById('show-repo-size').checked;
+  var showFileSize = document.getElementById('show-file-size').checked;
+  var showDownloadLink = document.getElementById('show-download-link').checked;
+  var showCopyFileButton = document.getElementById('show-copy-file-button').checked;
+  
   chrome.storage.sync.set(
     {
-      'x-github-token': token
+      'x-github-token': token,
+      'show-repo-size': showRepoSize,
+      'show-file-size': showFileSize,
+      'show-download-link': showDownloadLink,
+      'show-copy-file-button': showCopyFileButton
     },
     function() {
       // Update statusText to let user know options were saved.
@@ -58,11 +67,20 @@ function restoreOptions() {
 
   chrome.storage.sync.get(
     {
-      'x-github-token': ''
+      'x-github-token': '',
+      'show-repo-size': true,
+      'show-file-size': true,
+      'show-download-link': true,
+      'show-copy-file-button': true
     },
     function(storedData) {
       token = storedData['x-github-token'];
       document.getElementById('x-github-token').value = token;
+      document.getElementById('show-repo-size').checked = storedData['show-repo-size'];
+      document.getElementById('show-file-size').checked = storedData['show-file-size'];
+      document.getElementById('show-download-link').checked = storedData['show-download-link'];
+      document.getElementById('show-copy-file-button').checked = storedData['show-copy-file-button'];
+      
       var validationWarning = document.getElementById('validation-warning');
       validationWarning.textContent = validateUserToken(token);
 
