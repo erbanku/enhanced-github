@@ -38,6 +38,7 @@
 - Show download link for each file (not applicable for folder / symlink).
 - Copy file's contents directly to Clipboard (just won't work for markdown files).
 - Download file while viewing its contents.
+- Wrap long lines in markdown code blocks (optional, configurable in settings).
 
 The extension handles the SPA behavior of GitHub website from `v3.0.0` onwards :)
 
