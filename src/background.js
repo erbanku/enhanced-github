@@ -1,6 +1,6 @@
 /* global chrome */
 const MessageType = {
-  PAGE_RENDERED: 'pageRendered'
+  PAGE_RENDERED: 'pageRendered',
 };
 
 let currentUrl = '';
@@ -14,14 +14,28 @@ let tabId;
  * Read the deatiled blog - https://medium.com/@softvar/making-chrome-extension-smart-by-supporting-spa-websites-1f76593637e8
  */
 chrome.webRequest.onCompleted.addListener(
-  function(details) {
+  function (details) {
     const parsedUrl = new URL(details.url);
 
     if (currentUrl && currentUrl.indexOf(parsedUrl.pathname) > -1 && tabId) {
-      chrome.tabs.sendMessage(tabId, { type: MessageType.PAGE_RENDERED });
+      // Check if tab is still valid before sending message
+      chrome.tabs.get(tabId, (tab) => {
+        if (chrome.runtime.lastError) {
+          // Tab no longer exists, ignore the error
+          return;
+        }
+
+        chrome.tabs.sendMessage(tabId, { type: MessageType.PAGE_RENDERED }, (response) => {
+          // Handle potential errors when sending message
+          if (chrome.runtime.lastError) {
+            // Silently ignore errors from disconnected receivers
+            return;
+          }
+        });
+      });
     }
   },
-  { urls: ['*://*.github.com/*'] }
+  { urls: ['*://*.github.com/*'] },
 );
 
 /**
@@ -30,15 +44,15 @@ chrome.webRequest.onCompleted.addListener(
  * Read the deatiled blog - https://medium.com/@softvar/making-chrome-extension-smart-by-supporting-spa-websites-1f76593637e8
  */
 chrome.webNavigation.onHistoryStateUpdated.addListener(
-  details => {
+  (details) => {
     tabId = details.tabId;
     currentUrl = details.url;
   },
   {
     url: [
       {
-        hostSuffix: 'github.com'
-      }
-    ]
-  }
+        hostSuffix: 'github.com',
+      },
+    ],
+  },
 );

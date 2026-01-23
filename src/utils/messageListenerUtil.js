@@ -5,8 +5,15 @@ const MessageType = require('../enums/MessageType');
 const messageListenerUtil = {
   onMessage: () => {
     chrome.runtime.onMessage.addListener(function(request, _sender, _sendResponse) {
-      if (request && request.type === MessageType.PAGE_RENDERED) {
-        domUtil.addRepoData();
+      try {
+        if (request && request.type === MessageType.PAGE_RENDERED) {
+          domUtil.addRepoData();
+        }
+      } catch (error) {
+        // Silently handle errors from disconnected ports or closed pages
+        if (!error.message.includes('Extension context invalidated')) {
+          console.error('Error in message listener:', error);
+        }
       }
     });
   },

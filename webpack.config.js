@@ -28,44 +28,48 @@ function addPlugins(argv) {
   plugins.push(
     new webpack.BannerPlugin({
       banner: libraryHeaderComment,
-      entryOnly: true
-    })
+      entryOnly: true,
+    }),
   );
   plugins.push(
     new CleanWebpackPlugin({
-      default: [destination, path.resolve(__dirname, 'enhanced-github'), path.resolve(__dirname, 'enhanced-github.zip')]
-    })
+      default: [
+        destination,
+        path.resolve(__dirname, 'enhanced-github'),
+        path.resolve(__dirname, 'enhanced-github.zip'),
+      ],
+    }),
   );
   plugins.push(
     new CopyPlugin({
       patterns: [
-        { from: 'options.js', to: destination, },
-        { from: 'popup.js', to: destination, },
-        { from: '*html', to: destination, },
-        { from: 'manifest.json', to: destination,},
-        { from: 'icons/*.png', to: destination, },
-        { from: 'src/background.js', to: destination, },
-        { from: 'LICENSE', to: destination , }
-      ]
-    })
+        { from: 'options.js', to: destination },
+        { from: 'popup.js', to: destination },
+        { from: '*html', to: destination },
+        { from: 'manifest.json', to: destination },
+        { from: 'icons/*.png', to: destination },
+        { from: 'src/background.js', to: path.join(destination, 'src') },
+        { from: 'LICENSE', to: destination },
+      ],
+    }),
   );
 
   if (argv.mode === 'production') {
     plugins.push(
       new ZipPlugin({
         path: path.resolve(__dirname, 'dist'),
-        filename: path.resolve(__dirname, 'enhanced-github.zip')
-      })
+        filename: path.resolve(__dirname, 'enhanced-github.zip'),
+      }),
     );
   }
 
   return plugins;
 }
 
-module.exports = function(_env, argv) {
+module.exports = function (_env, argv) {
   return {
     entry: {
-      [libraryName]: './src/inject.js'
+      [libraryName]: './src/inject.js',
     },
     devtool: 'source-map',
     mode: argv.mode,
@@ -73,7 +77,7 @@ module.exports = function(_env, argv) {
       path: destination,
       filename: 'src/inject.js',
       library: libraryName,
-      libraryTarget: 'global'
+      libraryTarget: 'global',
     },
     module: {
       rules: [
@@ -81,15 +85,15 @@ module.exports = function(_env, argv) {
           test: /\.js$/,
           exclude: /node_modules|dist/,
           use: {
-            loader: 'babel-loader'
-          }
-        }
-      ]
+            loader: 'babel-loader',
+          },
+        },
+      ],
     },
     plugins: addPlugins(argv),
     watchOptions: {
       poll: true,
-      ignored: /node_modules/
-    }
+      ignored: /node_modules/,
+    },
   };
 };
