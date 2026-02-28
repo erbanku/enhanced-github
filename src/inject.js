@@ -54,6 +54,21 @@ const CommonEnum = require('./enums/CommonEnum');
           domUtil.applyCodeWrapping();
         }
       );
+
+      // GitHub uses Turbo (and previously pjax) for SPA navigation.
+      // Re-run on each navigation so the extension works on every page.
+      document.addEventListener('pjax:end', function() {
+        domUtil.addRepoData();
+        domUtil.applyCodeWrapping();
+      });
+      document.addEventListener('turbo:render', function() {
+        domUtil.addRepoData();
+        domUtil.applyCodeWrapping();
+      });
+      window.addEventListener('popstate', function() {
+        domUtil.addRepoData();
+        domUtil.applyCodeWrapping();
+      });
     }
   }, 10);
 })();

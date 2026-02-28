@@ -3,50 +3,20 @@ const MessageType = {
   PAGE_RENDERED: 'pageRendered',
 };
 
-let currentUrl = '';
-let tabId;
-
 /**
- * Check the status of calls being sent from github.com domain.
- * This is required to know whether the page which is responsible for rendering GitHub page has completed.
- * GitHub is now SPA
+ * Since GitHub is a full SPA (now using Turbo), we listen for history state
+ * updates and notify the content script to re-run its logic.
  *
- * Read the deatiled blog - https://medium.com/@softvar/making-chrome-extension-smart-by-supporting-spa-websites-1f76593637e8
- */
-chrome.webRequest.onCompleted.addListener(
-  function (details) {
-    const parsedUrl = new URL(details.url);
-
-    if (currentUrl && currentUrl.indexOf(parsedUrl.pathname) > -1 && tabId) {
-      // Check if tab is still valid before sending message
-      chrome.tabs.get(tabId, (tab) => {
-        if (chrome.runtime.lastError) {
-          // Tab no longer exists, ignore the error
-          return;
-        }
-
-        chrome.tabs.sendMessage(tabId, { type: MessageType.PAGE_RENDERED }, (response) => {
-          // Handle potential errors when sending message
-          if (chrome.runtime.lastError) {
-            // Silently ignore errors from disconnected receivers
-            return;
-          }
-        });
-      });
-    }
-  },
-  { urls: ['*://*.github.com/*'] },
-);
-
-/**
- * Since, GitHub is now SPA, we need to add this listener to know when page-url has changed so that Extension can work on all pages perfectly.
- *
- * Read the deatiled blog - https://medium.com/@softvar/making-chrome-extension-smart-by-supporting-spa-websites-1f76593637e8
+ * Read the detailed blog - https://medium.com/@softvar/making-chrome-extension-smart-by-supporting-spa-websites-1f76593637e8
  */
 chrome.webNavigation.onHistoryStateUpdated.addListener(
   (details) => {
-    tabId = details.tabId;
-    currentUrl = details.url;
+    chrome.tabs.sendMessage(details.tabId, { type: MessageType.PAGE_RENDERED }, () => {
+      // Silently ignore errors from disconnected receivers
+      if (chrome.runtime.lastError) {
+        return;
+      }
+    });
   },
   {
     url: [
